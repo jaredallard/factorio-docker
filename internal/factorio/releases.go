@@ -41,7 +41,13 @@ func DownloadVersion(ctx context.Context, version, sha256sum, destDir string) er
 		return err
 	}
 
-	resp, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("https://factorio.com/get-download/%s/headless/linux64", version), http.NoBody)
+	req, err := http.NewRequestWithContext(ctx,
+		"GET", fmt.Sprintf("https://factorio.com/get-download/%s/headless/linux64", version),
+		http.NoBody)
+	if err != nil {
+		return err
+	}
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}

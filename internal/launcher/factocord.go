@@ -28,9 +28,9 @@ import (
 //go:embed embed/factocord-config.json
 var defaultFactocordConfig []byte
 
-// configureFactorcord configures the Factocord launcher based on the
+// configureFactocord configures the Factocord launcher based on the
 // provided configuration.
-func configureFactorcord(cfg *config.Config, args []string) error {
+func configureFactocord(cfg *config.Config, args []string) error {
 	var diskConfig map[string]any
 
 	configPath := filepath.Join(cfg.ServerDataPath, "config.json")
@@ -82,13 +82,13 @@ func configureFactorcord(cfg *config.Config, args []string) error {
 func runFactocord(cfg *config.Config, args []string) error {
 	// Ensure the Factocord configuration is setup based on our
 	// configuration.
-	if err := configureFactorcord(cfg, args); err != nil {
+	if err := configureFactocord(cfg, args); err != nil {
 		return fmt.Errorf("failed to configure Factocord: %w", err)
 	}
 
 	// Run Factocord.
 	newArgs := []string{
-		"Factocord-3.0",
+		"FactoCord-3.0",
 	}
 	newArgs = append(newArgs, args...)
 

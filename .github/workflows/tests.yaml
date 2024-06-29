@@ -1,0 +1,78 @@
+name: tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  GOCACHE: /tmp/.cache/go/build
+  GOMODCACHE: /tmp/.cache/go/mod
+
+concurrency:
+  group: ${{ github.repository }}-build-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  gotest:
+    name: go test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.GOCACHE }}
+          key: ${{ runner.os }}-go-build-cache
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.GOMODCACHE }}
+          key: ${{ runner.os }}-go-mod-cache-${{ hashFiles('go.sum') }}
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Download dependencies
+        run: go mod download
+      - name: Run go test
+        run: |
+          gotestsum -- -coverprofile=cover.out ./...
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./cover.out
+          fail_ci_if_error: true
+
+  golangci-lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.GOCACHE }}
+          key: ${{ runner.os }}-go-build-cache
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.GOMODCACHE }}
+          key: ${{ runner.os }}-go-mod-cache-${{ hashFiles('go.sum') }}
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Download dependencies
+        run: go mod download
+      - name: Retrieve golangci-lint version
+        run: |
+          echo "version=$(mise current golangci-lint)" >> "$GITHUB_OUTPUT"
+        id: golangci_lint
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v${{ steps.golangci_lint.outputs.version }}
+          args: --timeout=30m

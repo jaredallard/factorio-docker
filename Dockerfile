@@ -20,7 +20,6 @@ RUN mkdir -p /artifacts
 
 # Copy the go module and download the dependencies, only rebuild if the
 # go.mod or go.sum files change.
-# TODO(jaredallard): Buildkit cache mount.
 COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/tmp/.cache \
   go mod download

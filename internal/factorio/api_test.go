@@ -35,6 +35,6 @@ func TestCanGetLatestAndSHA256(t *testing.T) {
 	assert.NilError(t, err)
 
 	// Ensure it contains an expected file
-	_, err = os.Stat(filepath.Join(tmpDir, "factorio", "bin", "x64", "factorio"))
+	_, err = os.Stat(filepath.Join(tmpDir, "bin", "x64", "factorio"))
 	assert.NilError(t, err)
 }

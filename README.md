@@ -96,6 +96,20 @@ Docker images should be attested thanks to how easy Github has made it,
 but their images are built with a Python script that sadly can't easily
 do this :(
 
+### How do I verify the Docker image?
+
+You can use the [Github CLI] to easily verify that it was created
+through a Github action at a given commit. For example, to verify the
+latest built image:
+
+```bash
+docker pull ghcr.io/jaredallard/factorio
+# --deny-self-hosted-runners is optional, but proves that I didn't run
+# my own runners to create this image and somehow 'taint' the process.
+gh attestation verify oci://ghcr.io/jaredallard/factorio \
+  --owner jaredallard --deny-self-hosted-runners
+```
+
 ## Differences between [factoriotools/factorio-docker]
 
 1. Docker images do NOT contain Factorio's server code.
@@ -110,6 +124,7 @@ AGPL-3.0
 
 [Factorio]: https://www.factorio.com/
 [Factocord]: https://github.com/maxsupermanhd/FactoCord-3.0
+[Github CLI]: https://cli.github.com/
 [Github Packages UI]: https://github.com/jaredallard/factorio-docker/packages
 [Attested Docker Images]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds#about-artifact-attestations
 [factoriotools/factorio-docker]: https://github.com/factoriotools/factorio-docker

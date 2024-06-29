@@ -17,11 +17,38 @@
 // around configuring Factorio and running it.
 package main
 
-import "os"
+import (
+	"fmt"
+	"log/slog"
+	"os"
+
+	charmlog "github.com/charmbracelet/log"
+
+	"github.com/jaredallard/factorio-docker/internal/config"
+	"github.com/jaredallard/factorio-docker/internal/downloader"
+	"github.com/jaredallard/factorio-docker/internal/launcher"
+)
 
 // entrypoint is the entrypoint fro the wrapper CLI.
 func entrypoint() error {
-	return nil
+	handler := charmlog.New(os.Stderr)
+	log := slog.New(handler)
+
+	cfg, err := config.Load()
+	if err != nil {
+		return err
+	}
+
+	log.Info("Starting...", "version", cfg.Version, "server_path", cfg.InstallPath, "data_path", cfg.ServerDataPath)
+
+	// Ensure that we're using the requested version.
+	log.Info("Checking installed Factorio version")
+	if err := downloader.EnsureVersion(cfg, log); err != nil {
+		return err
+	}
+
+	// Launch the Factorio server.
+	return launcher.Launch(log, cfg)
 }
 
 // main runs the entrypoint function. If it returns a non-nil error, it
@@ -29,6 +56,7 @@ func entrypoint() error {
 // `defer` from swallowing panics.
 func main() {
 	if err := entrypoint(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }

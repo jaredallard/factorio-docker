@@ -21,10 +21,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jaredallard/factorio-docker/internal/factorio"
+	"github.com/jaredallard/factorio-docker/internal/downloader"
 	"github.com/spf13/cobra"
 )
 
+// rootCmd is the root command for the downloader CLI.
 var rootCmd = &cobra.Command{
 	Use:   "downloader <output-dir>",
 	Short: "Downloads a headless Factorio server to a directory",
@@ -36,54 +37,30 @@ var rootCmd = &cobra.Command{
 
 // entrypoint is the entrypoint for the downloader CLI.
 func entrypoint(cmd *cobra.Command, outputDir string) error {
-	version, _ := cmd.Flags().GetString("version")
-	sha256sum, _ := cmd.Flags().GetString("sha256sum")
-	channel, _ := cmd.Flags().GetString("channel")
+	version, _ := cmd.Flags().GetString("version")     //nolint:errcheck
+	sha256sum, _ := cmd.Flags().GetString("sha256sum") //nolint:errcheck
 
+	// If it doesn't exist, create the output directory.
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(outputDir, 0755); err != nil {
+		if err := os.MkdirAll(outputDir, 0o755); err != nil {
 			return err
 		}
 	}
 
 	// Ensure the output directory is empty.
 	if files, err := os.ReadDir(outputDir); err == nil && len(files) > 0 {
-		return fmt.Errorf("output directory %s is not empty", outputDir)
+		return fmt.Errorf("output directory %q is not empty", outputDir)
 	}
 
-	if version == "latest" {
-		rels, err := factorio.GetLatestReleases()
-		if err != nil {
-			return err
-		}
-
-		switch channel {
-		case "stable":
-			version = rels.Stable
-		case "experimental":
-			version = rels.Experimental
-		}
-	}
-
-	if sha256sum == "" {
-		var err error
-		sha256sum, err = factorio.GetSHA256(version)
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Println("Downloading Factorio version", version, "to", outputDir, "with SHA256 sum", sha256sum)
-	return factorio.DownloadVersion(version, sha256sum, outputDir)
+	return downloader.Download(version, sha256sum, outputDir)
 }
 
-// main runs the entrypoint function. If it returns a non-nil error, it
-// exits the program with a status code of 1. This is done to prevent
-// `defer` from swallowing panics.
+// main runs sets up and runs Cobra.
 func main() {
-	rootCmd.PersistentFlags().String("version", "latest", "The version of Factorio to download")
-	rootCmd.PersistentFlags().String("channel", "stable", "The channel to use for the latest version, when version isn't set")
-	rootCmd.PersistentFlags().String("sha256sum", "", "The SHA256 sum of the Factorio download")
+	rootCmd.PersistentFlags().String("version", "stable",
+		"The version of Factorio to download. Can be 'stable' or 'experimental' for latest release in that channel.")
+	rootCmd.PersistentFlags().String("sha256sum", "",
+		"The SHA256 sum of the Factorio download, if set it will be used instead of fetching it.")
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

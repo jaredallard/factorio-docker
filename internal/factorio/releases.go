@@ -17,22 +17,26 @@ package factorio
 
 import (
 	"archive/tar"
+	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
-	"github.com/jamespfennell/xz"
+	"github.com/dustin/go-humanize"
+	"github.com/ulikunitz/xz"
 )
 
 // DownloadVersion downloads a Factorio version to the specified
 // directory. The downloaded version is validated against the SHA256 sum
 // on the remote, and extracted to the specified directory.
-func DownloadVersion(version, sha256sum, dest string) error {
-	if _, err := os.Stat(dest); err != nil {
+func DownloadVersion(version, sha256sum, destDir string) error {
+	if _, err := os.Stat(destDir); err != nil {
 		return err
 	}
 
@@ -45,7 +49,10 @@ func DownloadVersion(version, sha256sum, dest string) error {
 	h := sha256.New()
 	// While extracting the file, also calculate the SHA256sum. This
 	// prevents needing to read the file twice.
-	xzr := xz.NewReader(io.TeeReader(resp.Body, h))
+	xzr, err := xz.NewReader(bufio.NewReader(io.TeeReader(resp.Body, h)))
+	if err != nil {
+		return err
+	}
 
 	// Extract the tarball to the destination directory.
 	t := tar.NewReader(xzr)
@@ -60,7 +67,16 @@ func DownloadVersion(version, sha256sum, dest string) error {
 
 		fInf := header.FileInfo()
 
-		path := filepath.Join(dest, header.Name)
+		archiveFilePath := header.Name
+		// Remove factorio/ from the path.
+		archiveFilePath = filepath.Clean(strings.TrimPrefix(archiveFilePath, "factorio/"))
+
+		//nolint:gosec // Why: We're mitigating it below.
+		destpath := filepath.Join(destDir, archiveFilePath)
+		if !strings.HasPrefix(destpath, filepath.Clean(destDir)+string(os.PathSeparator)) {
+			return fmt.Errorf("%s: illegal file path", archiveFilePath)
+		}
+
 		if header.Typeflag == tar.TypeDir {
 			// We JIT create them later.
 			continue
@@ -69,22 +85,32 @@ func DownloadVersion(version, sha256sum, dest string) error {
 		// Using a closure to ensure the file is closed after we're done
 		// since defer won't work in a loop.
 		if err := func() error {
-			if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			if err := os.MkdirAll(filepath.Dir(destpath), 0o755); err != nil {
 				return err
 			}
 
-			f, err := os.Create(path)
+			f, err := os.Create(destpath)
 			if err != nil {
 				return err
 			}
 			defer f.Close()
 
-			if err := os.Chmod(path, fInf.Mode()); err != nil {
-				return fmt.Errorf("failed to chmod file %s: %w", path, err)
+			if err := os.Chmod(destpath, fInf.Mode()); err != nil {
+				return fmt.Errorf("failed to chmod file %s: %w", destpath, err)
 			}
 
-			fmt.Println("Extracting", header.Name, "->", path)
-			_, err = io.Copy(f, t)
+			fmt.Println(" ->", destpath, humanize.Bytes(uint64(header.Size)))
+			for {
+				_, err = io.CopyN(f, t, 4096)
+				if err != nil {
+					if errors.Is(err, io.EOF) {
+						err = nil
+					}
+
+					break
+				}
+			}
+			// Pass the error up the stack.
 			return err
 		}(); err != nil {
 			return err

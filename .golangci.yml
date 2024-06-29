@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://json.schemastore.org/golangci-lint
+
+# Linter settings
+linters-settings:
+  dupl:
+    threshold: 100
+  errcheck:
+    check-blank: true
+  funlen:
+    lines: 500
+    statements: 50
+  gocyclo:
+    min-complexity: 25
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  lll:
+    line-length: 140
+
+linters:
+  # Inverted configuration with enable-all and disable is not scalable during updates of golangci-lint.
+  disable-all: true
+  enable:
+    - bodyclose
+    - dogsled
+    - errcheck
+    - errorlint
+    - exhaustive # Checks exhaustiveness of enum switch statements.
+    - exportloopref # Checks for pointers to enclosing loop variables.
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - revive
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - staticcheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+issues:
+  exclude:
+    # We allow error shadowing
+    - 'declaration of "err" shadows declaration at'
+
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - gosec
+        - funlen
+        - gochecknoglobals # Globals in test files are tolerated.
+        - goconst # Repeated consts in test files are tolerated.
+    # This rule incorrectly flags nil references after assert.Assert(t, x != nil)
+    - path: _test\.go
+      text: "SA5011"
+      linters:
+        - staticcheck
+    - linters:
+        - lll
+      source: "^//go:generate "
+
+output:
+  sort-results: true

@@ -9,10 +9,6 @@ Docker container for running [Factorio].
 
 ## Quickstart
 
-> [!NOTE]
-> To apply configuration, checkout the `-e` CLI argument or
-> `environment` key for each installation method, respectively.
-
 ### Docker CLI
 
 ```bash
@@ -25,6 +21,7 @@ docker run -d \
   -p 34197:34197/udp \
   -p 27015:27015/tcp \
   -v /opt/factorio:/factorio \
+  -e VERSION=stable \
   --name factorio \
   --restart=unless-stopped \
   ghcr.io/jaredallard/factorio
@@ -37,6 +34,12 @@ services:
   factorio:
     image: ghcr.io/jaredallard/factorio
     restart: unless-stopped
+    environment:
+      # Version can be: experimental, stable, or a specific version.
+      VERSION: stable
+      # Optional: Checksum to expect for the downloaded tar.xz. If not
+      # set, it will be fetched from Factorio's site.
+      SHA256SUM: ""
     ports:
       - 34197:34197/udp
       - 27015:27015/tcp
@@ -77,7 +80,7 @@ mise run build
 
 ## FAQ
 
-### Why not [factoriotools/factorio-docker](https://github.com/factoriotools/factorio-docker)?
+### Why not [factoriotools/factorio-docker]?
 
 I don't have an amazing reason other than I building on top of that
 image originally and found that using Bash was hitting it's limits
@@ -88,6 +91,14 @@ Docker images should be attested thanks to how easy Github has made it,
 but their images are built with a Python script that sadly can't easily
 do this :(
 
+## Differences between [factoriotools/factorio-docker]
+
+1. Docker images do NOT contain Factorio's server code.
+  a) Why not? While it was considered to do this, it was decided to not
+  because that would leave the base docker images vulnerable as they
+  would likely rarely be updated. As such, it was decided that the
+  version should always be downloaded at runtime once instead.
+
 ## License
 
 AGPL-3.0
@@ -96,3 +107,4 @@ AGPL-3.0
 [Factocord]: https://github.com/maxsupermanhd/FactoCord-3.0
 [Github Packages UI]: https://github.com/jaredallard/factorio-docker/packages
 [Attested Docker Images]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds#about-artifact-attestations
+[factoriotools/factorio-docker]: https://github.com/factoriotools/factorio-docker

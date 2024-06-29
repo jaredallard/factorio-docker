@@ -6,13 +6,15 @@ ARG DEBIAN_VERSION=bookworm
 FROM golang:${GO_VERSION}-${DEBIAN_VERSION} AS builder
 WORKDIR /src
 
+# Used for build caching.
 ENV GOCACHE=/tmp/.cache/go-build
 ENV GOMODCACHE=/tmp/.cache/go-mod
 
 # See --from reasoning near the end.
-ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
+ENV \
+  CGO_ENABLED=0 \
+  GOOS=linux \
+  GOARCH=amd64
 
 RUN mkdir -p /artifacts
 
@@ -30,8 +32,19 @@ RUN --mount=type=cache,target=/tmp/.cache \
   go build -trimpath -v -ldflags "-s -w" -o /artifacts ./cmd/...
 
 FROM golang:${GO_VERSION}-${DEBIAN_VERSION} AS factocord
-ENV GOBIN=/artifacts
-RUN go install github.com/maxsupermanhd/FactoCord-3.0/v3@v3.2.19
+ENV \
+  CGO_ENABLED=0 \
+  GOOS=linux \
+  GOARCH=amd64
+
+# Why: We're building Factocord-3.0...
+# hadolint ignore=DL3003
+RUN --mount=type=cache,target=/tmp/.cache \
+  git clone https://github.com/maxsupermanhd/FactoCord-3.0 && \
+  cd "FactoCord-3.0" && \
+  git checkout v3.2.19 && \
+  go mod download && \
+  go build -o /artifacts/ .
 
 # We hardcode linux/amd64 here because Factorio can only be ran on
 # amd64.

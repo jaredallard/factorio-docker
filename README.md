@@ -14,13 +14,16 @@ Docker container for running [Factorio].
 ```bash
 # Create the storage directory for the server files and ensure it's
 # owned by the container user.
-sudo mkdir -p /opt/factorio
+# - data is for your server data
+# - server_files is for the downloaded server only
+sudo mkdir -p /opt/factorio{data,server_files}
 sudo chown 845:845 /opt/factorio
 
 docker run -d \
   -p 34197:34197/udp \
   -p 27015:27015/tcp \
-  -v /opt/factorio:/factorio \
+  -v /opt/factorio/server_files:/opt/factorio \
+  -v /opt/factorio/data:/data \
   -e VERSION=stable \
   --name factorio \
   --restart=unless-stopped \
@@ -44,10 +47,12 @@ services:
       - 34197:34197/udp
       - 27015:27015/tcp
     volumes:
-    - data:/factorio
+    - data:/data
+    - server_files:/opt/factorio
 
 volumes:
   data:
+  server_files:
 ```
 
 **Note**: Alternatively, you can remove the top-level `volumes` key and

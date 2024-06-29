@@ -18,6 +18,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -52,7 +53,7 @@ func entrypoint(cmd *cobra.Command, outputDir string) error {
 		return fmt.Errorf("output directory %q is not empty", outputDir)
 	}
 
-	return downloader.Download(version, sha256sum, outputDir)
+	return downloader.Download(cmd.Context(), version, sha256sum, outputDir)
 }
 
 // main runs sets up and runs Cobra.
@@ -62,7 +63,7 @@ func main() {
 	rootCmd.PersistentFlags().String("sha256sum", "",
 		"The SHA256 sum of the Factorio download, if set it will be used instead of fetching it.")
 
-	if err := rootCmd.Execute(); err != nil {
+	if err := rootCmd.ExecuteContext(context.Background()); err != nil {
 		os.Exit(1)
 	}
 }

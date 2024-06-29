@@ -16,19 +16,44 @@
 package launcher
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 
 	"github.com/jaredallard/factorio-docker/internal/config"
 )
 
 // runVanilla runs the Factorio server as normal.
-func runVanilla(cfg *config.Config, args []string) error {
+func runVanilla(ctx context.Context, cfg *config.Config, args []string) error {
 	//nolint:gosec // Why: We're creating the arguments above.
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	cmd.Dir = cfg.InstallPath
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
-	return cmd.Run()
+
+	// Start the process in a new process group so we can kill it and all
+	// of its children reliably. This also detaches ^C (sent to us) from
+	// killing the child process, instead allowing our context cancel to
+	// do that.
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	cmd.Cancel = func() error {
+		// Send SIGINT to the child process group.
+		return syscall.Kill(-cmd.Process.Pid, syscall.SIGINT)
+	}
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start '%s': %w", cmd.String(), err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		// Only report errors if the context wasn't canceled.
+		if ctx.Err() == nil {
+			return fmt.Errorf("failed to run '%s': %w", cmd.String(), err)
+		}
+	}
+
+	return nil
 }

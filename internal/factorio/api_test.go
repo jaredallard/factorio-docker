@@ -1,6 +1,7 @@
 package factorio_test
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -31,7 +32,7 @@ func TestCanGetLatestAndSHA256(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	t.Log("Downloading", rels.Stable, "to", tmpDir, "sha256:", stableSHA)
-	err = factorio.DownloadVersion(rels.Stable, stableSHA, tmpDir)
+	err = factorio.DownloadVersion(context.Background(), rels.Stable, stableSHA, tmpDir)
 	assert.NilError(t, err)
 
 	// Ensure it contains an expected file

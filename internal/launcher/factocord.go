@@ -16,6 +16,7 @@
 package launcher
 
 import (
+	"context"
 	_ "embed" // Used w/ go:embed
 	"encoding/json"
 	"fmt"
@@ -81,7 +82,7 @@ func configureFactocord(cfg *config.Config, args []string) error {
 
 // runFactocord runs Factorio through the Factocord launcher to enable
 // Discord presence.
-func runFactocord(cfg *config.Config, args []string) error {
+func runFactocord(ctx context.Context, cfg *config.Config, args []string) error {
 	// Ensure the Factocord configuration is setup based on our
 	// configuration.
 	if err := configureFactocord(cfg, args); err != nil {
@@ -94,5 +95,5 @@ func runFactocord(cfg *config.Config, args []string) error {
 	}
 	newArgs = append(newArgs, args...)
 
-	return runVanilla(cfg, newArgs)
+	return runVanilla(ctx, cfg, newArgs)
 }

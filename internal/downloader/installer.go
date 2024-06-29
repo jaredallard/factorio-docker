@@ -16,6 +16,7 @@
 package downloader
 
 import (
+	"context"
 	_ "embed" // Embed the default Factorio config.
 	"fmt"
 	"log/slog"
@@ -27,7 +28,7 @@ import (
 )
 
 // EnsureVersion ensures that the Factorio server is installed and up-to-date.
-func EnsureVersion(cfg *config.Config, log *slog.Logger) error {
+func EnsureVersion(ctx context.Context, cfg *config.Config, log *slog.Logger) error {
 	st := state.Open(filepath.Join(cfg.InstallPath, "state.json"))
 
 	if st.Version == "" {
@@ -73,7 +74,7 @@ func EnsureVersion(cfg *config.Config, log *slog.Logger) error {
 	}
 
 	// The installed version is not the requested version, download it.
-	if err := Download(cfg.Version, "", cfg.InstallPath); err != nil {
+	if err := Download(ctx, cfg.Version, "", cfg.InstallPath); err != nil {
 		return err
 	}
 

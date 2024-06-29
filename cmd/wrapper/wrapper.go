@@ -18,9 +18,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
+	"os/signal"
 
 	charmlog "github.com/charmbracelet/log"
 
@@ -34,6 +36,9 @@ func entrypoint() error {
 	handler := charmlog.New(os.Stderr)
 	log := slog.New(handler)
 
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
 	cfg, err := config.Load()
 	if err != nil {
 		return err
@@ -43,12 +48,12 @@ func entrypoint() error {
 
 	// Ensure that we're using the requested version.
 	log.Info("Checking installed Factorio version")
-	if err := downloader.EnsureVersion(cfg, log); err != nil {
+	if err := downloader.EnsureVersion(ctx, cfg, log); err != nil {
 		return err
 	}
 
 	// Launch the Factorio server.
-	return launcher.Launch(log, cfg)
+	return launcher.Launch(ctx, log, cfg)
 }
 
 // main runs the entrypoint function. If it returns a non-nil error, it

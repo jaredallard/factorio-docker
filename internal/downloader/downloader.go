@@ -18,6 +18,7 @@
 package downloader
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -27,7 +28,7 @@ import (
 // Download downloads the specified Factorio version to the output
 // directory. If version is "stable" or "experimental", it will download
 // the latest stable or experimental version, respectively.
-func Download(version, sha256sum, outputDir string) error {
+func Download(ctx context.Context, version, sha256sum, outputDir string) error {
 	// Ensure the output directory is empty.
 	if files, err := os.ReadDir(outputDir); err == nil && len(files) > 0 {
 		return fmt.Errorf("output directory %s is not empty", outputDir)
@@ -52,5 +53,5 @@ func Download(version, sha256sum, outputDir string) error {
 		}
 	}
 
-	return factorio.DownloadVersion(version, sha256sum, outputDir)
+	return factorio.DownloadVersion(ctx, version, sha256sum, outputDir)
 }

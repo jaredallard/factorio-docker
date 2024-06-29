@@ -17,6 +17,7 @@
 package launcher
 
 import (
+	"context"
 	_ "embed" // Embed is used to embed default configuration files.
 	"fmt"
 	"io"
@@ -146,7 +147,7 @@ func installDefaultFiles(log *slog.Logger, cfg *config.Config) error {
 }
 
 // Launch starts a Factorio server based on the provided configuration.
-func Launch(log *slog.Logger, cfg *config.Config) error {
+func Launch(ctx context.Context, log *slog.Logger, cfg *config.Config) error {
 	if err := setupConfig(cfg); err != nil {
 		return fmt.Errorf("failed to setup config: %w", err)
 	}
@@ -177,8 +178,8 @@ func Launch(log *slog.Logger, cfg *config.Config) error {
 	}
 
 	if cfg.Factocord.Enabled {
-		return runFactocord(cfg, args)
+		return runFactocord(ctx, cfg, args)
 	}
 
-	return runVanilla(cfg, args)
+	return runVanilla(ctx, cfg, args)
 }

@@ -18,6 +18,7 @@ package factorio
 import (
 	"archive/tar"
 	"bufio"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -35,12 +36,12 @@ import (
 // DownloadVersion downloads a Factorio version to the specified
 // directory. The downloaded version is validated against the SHA256 sum
 // on the remote, and extracted to the specified directory.
-func DownloadVersion(version, sha256sum, destDir string) error {
+func DownloadVersion(ctx context.Context, version, sha256sum, destDir string) error {
 	if _, err := os.Stat(destDir); err != nil {
 		return err
 	}
 
-	resp, err := http.Get(fmt.Sprintf("https://factorio.com/get-download/%s/headless/linux64", version))
+	resp, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("https://factorio.com/get-download/%s/headless/linux64", version), http.NoBody)
 	if err != nil {
 		return err
 	}

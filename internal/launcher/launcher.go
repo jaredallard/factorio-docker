@@ -22,10 +22,10 @@ import (
 	"io"
 	"log/slog"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/jaredallard/factorio-docker/internal/config"
+	"github.com/jaredallard/factorio-docker/internal/factorio"
 	"gopkg.in/ini.v1"
 )
 
@@ -157,7 +157,7 @@ func Launch(log *slog.Logger, cfg *config.Config) error {
 
 	execPath := filepath.Join(cfg.InstallPath, "bin", "x64", "factorio")
 
-	if err := generateDefaultSave(cfg, execPath); err != nil {
+	if err := factorio.GenerateDefaultSave(cfg, execPath); err != nil {
 		return fmt.Errorf("failed to generate default save: %w", err)
 	}
 
@@ -176,11 +176,9 @@ func Launch(log *slog.Logger, cfg *config.Config) error {
 		"--start-server-load-latest",
 	}
 
-	//nolint:gosec // Why: We're creating the arguments above.
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Dir = cfg.InstallPath
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-	return cmd.Run()
+	if cfg.Factocord.Enabled {
+		return runFactocord(cfg, args)
+	}
+
+	return runVanilla(cfg, args)
 }

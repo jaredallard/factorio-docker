@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package launcher
+package factorio
 
 import (
 	"os"
@@ -24,7 +24,7 @@ import (
 )
 
 // generateSave generates a new Factorio save.
-func generateSave(cfg *config.Config, execPath, saveName string) error {
+func GenerateSave(cfg *config.Config, execPath, saveName string) error {
 	args := [...]string{
 		execPath,
 		"--create", filepath.Join(cfg.ServerDataPath, "saves", saveName) + ".zip",
@@ -40,7 +40,7 @@ func generateSave(cfg *config.Config, execPath, saveName string) error {
 	return cmd.Run()
 }
 
-func generateDefaultSave(cfg *config.Config, execPath string) error {
+func GenerateDefaultSave(cfg *config.Config, execPath string) error {
 	// If there's no save found, create one.
 	savesDir := filepath.Join(cfg.ServerDataPath, "saves")
 	files, err := os.ReadDir(savesDir)
@@ -60,5 +60,5 @@ func generateDefaultSave(cfg *config.Config, execPath string) error {
 		return nil
 	}
 
-	return generateSave(cfg, execPath, "_autosave1")
+	return GenerateSave(cfg, execPath, "_autosave1")
 }

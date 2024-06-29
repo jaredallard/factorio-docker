@@ -35,16 +35,17 @@ FROM golang:${GO_VERSION}-${DEBIAN_VERSION} AS factocord
 ENV \
   CGO_ENABLED=0 \
   GOOS=linux \
-  GOARCH=amd64
+  GOARCH=amd64 \
+  FACTOCORD_VERSION=v3.2.19
 
 # Why: We're building Factocord-3.0...
 # hadolint ignore=DL3003
 RUN --mount=type=cache,target=/tmp/.cache \
   git clone https://github.com/maxsupermanhd/FactoCord-3.0 && \
   cd "FactoCord-3.0" && \
-  git checkout v3.2.19 && \
+  git checkout "${FACTOCORD_VERSION}" && \
   go mod download && \
-  go build -o /artifacts/ .
+  go build -ldflags "-w -s -X 'github.com/maxsupermanhd/FactoCord-3.0/v3/support.FactoCordVersion=${FACTOCORD_VERSION}'" -o /artifacts/ .
 
 # We hardcode linux/amd64 here because Factorio can only be ran on
 # amd64.

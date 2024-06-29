@@ -33,7 +33,9 @@ var defaultFactocordConfig []byte
 func configureFactocord(cfg *config.Config, args []string) error {
 	var diskConfig map[string]any
 
-	configPath := filepath.Join(cfg.ServerDataPath, "config.json")
+	// We write to install-path because FactoCord does not allow
+	// configuring the location of the config file.
+	configPath := filepath.Join(cfg.InstallPath, "config.json")
 	if _, err := os.Stat(configPath); err != nil {
 		if err := os.WriteFile(configPath, defaultFactocordConfig, 0o600); err != nil {
 			return fmt.Errorf("failed to write default Factocord config: %w", err)

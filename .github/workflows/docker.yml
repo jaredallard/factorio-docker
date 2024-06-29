@@ -24,6 +24,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to GitHub Container Registry
@@ -36,6 +41,9 @@ jobs:
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Use the timestamp of the last commit as the build date
         run: echo "TIMESTAMP=$(git log -1 --pretty=%ct)" >> $GITHUB_ENV
+      - name: Get Go version from mise
+        id: go
+        run: echo "version=$(mise current golang)" >> $GITHUB_OUTPUT
       - name: Build and push image
         uses: docker/build-push-action@v6
         id: push
@@ -45,6 +53,7 @@ jobs:
           context: .
           push: true
           sbom: true
+          build-args: GO_VERSION=${{ steps.go.outputs.version }}
           # Latest & SHA are mutable since we rebuild weekly. We include
           # date in case there's a need to reference a specific build at
           # a specific date.

@@ -106,6 +106,7 @@ func DownloadVersion(ctx context.Context, version, sha256sum, destDir string) er
 				return fmt.Errorf("failed to chmod file %s: %w", destpath, err)
 			}
 
+			//nolint:gosec // Why: This is a >0.
 			fmt.Println(" ->", destpath, humanize.Bytes(uint64(header.Size)))
 			for {
 				_, err = io.CopyN(f, t, 4096)

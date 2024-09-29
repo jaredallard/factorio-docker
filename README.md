@@ -4,8 +4,8 @@ Docker container for running [Factorio].
 
 ## Features
 
-* Discord Bot via [Factocord]
-* [Attested Docker images]
+- Discord Bot via [Factocord]
+- [Attested Docker images]
 
 ## Quickstart
 
@@ -47,8 +47,8 @@ services:
       - 34197:34197/udp
       - 27015:27015/tcp
     volumes:
-    - data:/data
-    - server_files:/opt/factorio
+      - data:/data
+      - server_files:/opt/factorio
 
 volumes:
   data:
@@ -68,7 +68,7 @@ repository.
 
 Prerequisites:
 
-* [mise](https://mise.jdx.dev) (One can try to use host Go, but some
+- [mise](https://mise.jdx.dev) (One can try to use host Go, but some
   scripts may not work without `mise` being installed)
 
 First time/after-pulling:
@@ -113,10 +113,10 @@ gh attestation verify oci://ghcr.io/jaredallard/factorio \
 ## Differences between [factoriotools/factorio-docker]
 
 1. Docker images do NOT contain Factorio's server code.
-  a) Why not? While it was considered to do this, it was decided to not
-  because that would leave the base docker images vulnerable as they
-  would likely rarely be updated. As such, it was decided that the
-  version should always be downloaded at runtime once instead.
+   a) Why not? While it was considered to do this, it was decided to not
+   because that would leave the base docker images vulnerable as they
+   would likely rarely be updated. As such, it was decided that the
+   version should always be downloaded at runtime once instead.
 
 ## License
 

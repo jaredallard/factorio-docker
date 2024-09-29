@@ -1,35 +1,50 @@
+
+# Default versions of tools, to update these, set [tools.override]
 [tools]
-golang = "1.23.1"
-golangci-lint = "1.61"
+bun = "latest"
+git-cliff = "latest"
+golang = "1.23.0"
+golangci-lint = "1.60.3"
 goreleaser = "latest"
 "go:gotest.tools/gotestsum" = "v1.12.0"
 "go:golang.org/x/tools/cmd/goimports" = "latest"
 "go:mvdan.cc/sh/v3/cmd/shfmt" = "latest"
+"go:github.com/thenativeweb/get-next-version" = "latest"
 
 [tasks.build]
 description = "Build a binary for the current platform/architecture"
-sources = ["cmd/**/*.go", "internal/**/*.go", "go.mod", "go.sum"]
-outputs = ["./bin/wrapper", "./bin/downloader"]
-run = "go build -v -trimpath -o ./bin/ ./cmd/..."
+run = "go build -trimpath -o ./bin/ -v ./cmd/..."
 
-[tasks.test]
-description = "Run tests"
-run = "gotestsum"
-
-[tasks.lint]
-description = "Run linters"
-run = "golangci-lint run"
+[tasks.changelog]
+description = "Generate a changelog for the current version"
+outputs = ["CHANGELOG.md"]
+run = ["git-cliff --config .cliff.toml --output CHANGELOG.md"]
 
 [tasks.fmt]
 alias = "format"
 description = "Format code"
 run = [
-  "go mod tidy",
-  "gofmt -s -w .",
-  "goimports -w .",
-  "shfmt -w -i 2 -ci -sr .",
+	"go mod tidy",
+	"gofmt -s -w .",
+	"goimports -w .",
+	"shfmt -w .",
+	"bun node_modules/.bin/prettier --write '**/*.{json,yaml,yml,md,jsonschema.json}'",
 ]
 
-[tasks.docker-build]
-description = "Build a local Docker image for testing purposes"
-run = "docker buildx build --build-arg GO_VERSION=$(mise current golang) -t ghcr.io/jaredallard/factorio:local --load ."
+[tasks.lint]
+description = "Run linters"
+run = "golangci-lint run"
+
+[tasks.next-version]
+description = """Get the version number that would be released if a release was ran right now.
+Pass --rc to get the next release candidate version.
+"""
+run = ["./.github/scripts/get-next-version.sh"]
+
+[tasks.test]
+description = "Run tests"
+run = "gotestsum"
+
+## <<Stencil::Block(custom)>>
+
+## <</Stencil::Block>>

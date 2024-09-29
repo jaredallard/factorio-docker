@@ -38,8 +38,8 @@ var rootCmd = &cobra.Command{
 
 // entrypoint is the entrypoint for the downloader CLI.
 func entrypoint(cmd *cobra.Command, outputDir string) error {
-	version, _ := cmd.Flags().GetString("version")     //nolint:errcheck
-	sha256sum, _ := cmd.Flags().GetString("sha256sum") //nolint:errcheck
+	version, _ := cmd.Flags().GetString("version")     //nolint:errcheck // Why: Defaults.
+	sha256sum, _ := cmd.Flags().GetString("sha256sum") //nolint:errcheck // Why: Defaults.
 
 	// If it doesn't exist, create the output directory.
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {

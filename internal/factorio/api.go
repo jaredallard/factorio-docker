@@ -23,8 +23,13 @@ import (
 	"strings"
 )
 
-func getHeadlessArchiveNameForVersion(version string) string {
-	return fmt.Sprintf("factorio_headless_x64_%s.tar.xz", version)
+// getAllowedFileNames returns the allowed file names for a Factorio
+// version.
+func getAllowedFileNames(version string) []string {
+	return []string{
+		fmt.Sprintf("factorio_headless_x64_%s.tar.xz", version),
+		fmt.Sprintf("factorio-headless_linux_%s.tar.xz", version),
+	}
 }
 
 // Releases contains the latest releases of Factorio based on channels.
@@ -70,7 +75,7 @@ func GetLatestReleases() (*Releases, error) {
 // GetSHA256 gets the SHA256 hash of a Factorio version. This will only
 // return the hash of the headless version.
 func GetSHA256(version string) (string, error) {
-	expectedFileName := getHeadlessArchiveNameForVersion(version)
+	allowedFileNames := getAllowedFileNames(version)
 
 	resp, err := http.Get("https://factorio.com/download/sha256sums/")
 	if err != nil {
@@ -82,8 +87,10 @@ func GetSHA256(version string) (string, error) {
 	for scanner.Scan() {
 		// Format: SHA256_HASH FILENAME
 		line := scanner.Text()
-		if strings.Contains(line, expectedFileName) {
-			return strings.Fields(line)[0], nil
+		for _, expectedFileName := range allowedFileNames {
+			if strings.Contains(line, expectedFileName) {
+				return strings.Fields(line)[0], nil
+			}
 		}
 	}
 

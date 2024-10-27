@@ -23,6 +23,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"syscall"
 
 	charmlog "github.com/charmbracelet/log"
 
@@ -36,7 +37,7 @@ func entrypoint() error {
 	handler := charmlog.New(os.Stderr)
 	log := slog.New(handler)
 
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
 	cfg, err := config.Load()

@@ -40,8 +40,7 @@ func runVanilla(ctx context.Context, cfg *config.Config, args []string) error {
 	// do that.
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Cancel = func() error {
-		// Send SIGINT to the child process group.
-		return syscall.Kill(-cmd.Process.Pid, syscall.SIGINT)
+		return cmd.Process.Signal(syscall.SIGINT)
 	}
 
 	if err := cmd.Start(); err != nil {

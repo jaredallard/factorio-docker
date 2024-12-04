@@ -62,7 +62,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DATE }}
       - name: Attest
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v2
         id: attest
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}

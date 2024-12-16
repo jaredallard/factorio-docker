@@ -3,7 +3,7 @@ module github.com/jaredallard/factorio-docker
 go 1.22
 
 require (
-	github.com/caarlos0/env/v11 v11.2.2
+	github.com/caarlos0/env/v11 v11.3.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/spf13/cobra v1.8.1

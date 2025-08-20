@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/spf13/cobra v1.9.1
-	github.com/ulikunitz/xz v0.5.12
+	github.com/ulikunitz/xz v0.5.13
 	gopkg.in/ini.v1 v1.67.0
 	gotest.tools/v3 v3.5.2
 )

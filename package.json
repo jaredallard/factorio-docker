@@ -1,8 +1,0 @@
-{
-	"//": "Used for prettier",
-	"name": "@jaredallard/factorio-docker",
-	"devDependencies": {
-		"prettier": "^3.5.1"
-	},
-	"private": true
-}

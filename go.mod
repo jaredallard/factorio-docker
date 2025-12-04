@@ -6,7 +6,7 @@ require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/charmbracelet/log v0.4.2
 	github.com/dustin/go-humanize v1.0.1
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/ulikunitz/xz v0.5.15
 	gopkg.in/ini.v1 v1.67.0
 	gotest.tools/v3 v3.5.2

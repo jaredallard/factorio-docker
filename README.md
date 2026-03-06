@@ -98,6 +98,9 @@ do this :(
 
 ### How do I verify the Docker image?
 
+> [!WARNING]
+> This is currently broken while I migrate off of Github.
+
 You can use the [Github CLI] to easily verify that it was created
 through a Github action at a given commit. For example, to verify the
 latest built image:

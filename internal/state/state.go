@@ -1,9 +1,9 @@
-// Copyright (C) 2024 Jared Allard
+// Copyright (C) 2026 factorio-docker contributors
 //
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: AGPL-3.0
 
 // Package state handles tracking the state of the Factorio server.
 // Mainly concerned with which version is currently installed, so that
@@ -48,11 +50,12 @@ func Open(path string) *State {
 		return defaultState
 	}
 
+	//nolint:gosec // Why: By design.
 	f, err := os.Open(path)
 	if err != nil {
 		return defaultState
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // Why: Best effort.
 
 	var s State
 	if err := json.NewDecoder(f).Decode(&s); err != nil {
@@ -71,11 +74,12 @@ func (s *State) Save() error {
 		return fmt.Errorf("state path is unset")
 	}
 
+	//nolint:gosec // Why: By design.
 	f, err := os.Create(s.path)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // Why: Best effort.
 
 	return json.NewEncoder(f).Encode(s)
 }

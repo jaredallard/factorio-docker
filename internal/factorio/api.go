@@ -1,9 +1,9 @@
-// Copyright (C) 2024 Jared Allard
+// Copyright (C) 2026 factorio-docker contributors
 //
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: AGPL-3.0
 
 package factorio
 
@@ -59,7 +61,7 @@ func GetLatestReleases() (*Releases, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Why: Best effort.
 
 	var releases releaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
@@ -81,7 +83,7 @@ func GetSHA256(version string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Why: Best effort.
 
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {

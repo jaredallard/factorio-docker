@@ -1,9 +1,9 @@
-// Copyright (C) 2024 Jared Allard
+// Copyright (C) 2026 factorio-docker contributors
 //
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: AGPL-3.0
 
 // Package main implements the downloader CLI. This CLI downloads
 // Factorio and installs it.
@@ -43,7 +45,7 @@ func entrypoint(cmd *cobra.Command, outputDir string) error {
 
 	// If it doesn't exist, create the output directory.
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		if err := os.MkdirAll(outputDir, 0o750); err != nil {
 			return err
 		}
 	}

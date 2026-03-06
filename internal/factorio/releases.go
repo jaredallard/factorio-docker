@@ -1,9 +1,9 @@
-// Copyright (C) 2024 Jared Allard
+// Copyright (C) 2026 factorio-docker contributors
 //
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: AGPL-3.0
 
 package factorio
 
@@ -47,11 +49,13 @@ func DownloadVersion(ctx context.Context, version, sha256sum, destDir string) er
 	if err != nil {
 		return err
 	}
+
+	//nolint:gosec // Why: not applicable
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Why: Best effort.
 
 	h := sha256.New()
 	// While extracting the file, also calculate the SHA256sum. This
@@ -92,15 +96,17 @@ func DownloadVersion(ctx context.Context, version, sha256sum, destDir string) er
 		// Using a closure to ensure the file is closed after we're done
 		// since defer won't work in a loop.
 		if err := func() error {
-			if err := os.MkdirAll(filepath.Dir(destpath), 0o755); err != nil {
+			if err := os.MkdirAll(filepath.Dir(destpath), 0o750); err != nil {
 				return err
 			}
 
+			// TODO(jaredallard): Use github.com/jaredallard/archives
+			//nolint:gosec // Why: acceptable
 			f, err := os.Create(destpath)
 			if err != nil {
 				return err
 			}
-			defer f.Close()
+			defer f.Close() //nolint:errcheck // Why: Best effort.
 
 			if err := os.Chmod(destpath, fInf.Mode()); err != nil {
 				return fmt.Errorf("failed to chmod file %s: %w", destpath, err)

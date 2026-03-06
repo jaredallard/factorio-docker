@@ -5,5 +5,7 @@ arguments:
     - wrapper
   license: AGPL-3.0
   org: jaredallard
+  vcs: forgejo
+  vcs_host: git.rgst.io
 modules:
   - name: github.com/rgst-io/stencil-golang

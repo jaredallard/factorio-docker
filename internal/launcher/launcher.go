@@ -1,9 +1,9 @@
-// Copyright (C) 2024 Jared Allard
+// Copyright (C) 2026 factorio-docker contributors
 //
 // This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// SPDX-License-Identifier: AGPL-3.0
 
 // Package launcher runs Factorio or wrappers, such as Factocord.
 package launcher
@@ -39,7 +41,7 @@ func setupConfig(cfg *config.Config) error {
 	configPath := filepath.Join(cfg.InstallPath, "config", "config.ini")
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Dir(configPath), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(configPath), 0o750); err != nil {
 			return fmt.Errorf("failed to create config directory: %w", err)
 		}
 
@@ -90,7 +92,7 @@ func installDefaultFiles(log *slog.Logger, cfg *config.Config) error {
 		dirPath := filepath.Join(cfg.ServerDataPath, d)
 		if _, err := os.Stat(dirPath); err != nil {
 			log.Info("Creating default directory", "path", dirPath)
-			if err := os.MkdirAll(dirPath, 0o755); err != nil {
+			if err := os.MkdirAll(dirPath, 0o750); err != nil {
 				return fmt.Errorf("failed to create directory: %w", err)
 			}
 		}
@@ -121,17 +123,17 @@ func installDefaultFiles(log *slog.Logger, cfg *config.Config) error {
 
 		log.Info("Installing default file", "src", src, "dest", dest)
 		if err := func() error { // For defers in for loop.
-			srcF, err := os.Open(src)
+			srcF, err := os.Open(src) //nolint:gosec // Why: By design.
 			if err != nil {
 				return fmt.Errorf("failed to open source file: %w", err)
 			}
-			defer srcF.Close()
+			defer srcF.Close() //nolint:errcheck // Why: Best effort.
 
-			destF, err := os.Create(dest)
+			destF, err := os.Create(dest) //nolint:gosec // Why: By design.
 			if err != nil {
 				return fmt.Errorf("failed to create destination file: %w", err)
 			}
-			defer destF.Close()
+			defer destF.Close() //nolint:errcheck // Why: Best effort.
 
 			if _, err := io.Copy(destF, srcF); err != nil {
 				return fmt.Errorf("failed to copy file: %w", err)

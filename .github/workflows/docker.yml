@@ -36,7 +36,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_PACKAGES_WRITE }}
       - name: Determine date for tagging
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Use the timestamp of the last commit as the build date

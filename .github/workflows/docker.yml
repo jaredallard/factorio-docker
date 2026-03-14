@@ -45,7 +45,7 @@ jobs:
         id: go
         run: echo "version=$(mise current golang)" >> $GITHUB_OUTPUT
       - name: Build and push image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         id: push
         env:
           SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}

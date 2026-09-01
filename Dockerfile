@@ -72,8 +72,8 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Create a user to run the Factorio server under.
-RUN addgroup --system --gid "${PGID}" "${GROUP}" \
-	&& adduser --system --uid "${PUID}" --gid "${PGID}" --no-create-home --disabled-password --shell /bin/sh "${USER}" \
+RUN groupadd --system --gid "${PGID}" "${GROUP}" \
+	&& useradd --system --uid "${PUID}" --gid "${PGID}" --no-create-home --shell /bin/sh "${USER}" \
 	&& mkdir -p /data /opt/factorio \
 	&& chown -R "${USER}:${GROUP}" /data /opt/factorio \
 	&& chown -R "${USER}:${GROUP}" /data

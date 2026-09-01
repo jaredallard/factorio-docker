@@ -27,7 +27,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	charmlog "github.com/charmbracelet/log"
+	charmlog "charm.land/log/v2"
 
 	"github.com/jaredallard/factorio-docker/internal/config"
 	"github.com/jaredallard/factorio-docker/internal/downloader"

@@ -1,62 +1,100 @@
-version: 2.13.0
+version: 3.0.0
 modules:
-    - name: github.com/rgst-io/stencil-golang
-      url: https://github.com/rgst-io/stencil-golang
+    - name: go.rgst.io/rgst-io/stencil-golang
+      url: https://git.rgst.io/rgst-io/stencil-golang
       version:
-        commit: afbbc78e8d88c388061fb7889995b5796fd55579
-        tag: v2.3.5
+        commit: 4f188b3ed16fde669fa6b46ebec6e7eacadf5555
+        tag: v4.4.1
 files:
     - name: .cliff.toml
       template: .cliff.toml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .dprint.json
       template: .dprint.json.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .editorconfig
-      template: .editorconfig.tpl
-      module: github.com/rgst-io/stencil-golang
+      template: .editorconfig
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .gitattributes
       template: .gitattributes.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .github/scripts/get-next-version.sh
-      template: .github/scripts/get-next-version.sh.tpl
-      module: github.com/rgst-io/stencil-golang
+      template: .github/scripts/get-next-version.sh
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .github/settings.yml
       template: .github/settings.yml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: unmanaged
+      status_reason: Not using Github
     - name: .github/workflows/release.yaml
       template: .github/workflows/release.yaml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .github/workflows/tests.yaml
       template: .github/workflows/tests.yaml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .gitignore
       template: .gitignore.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .golangci.yml
       template: .golangci.yml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .goreleaser.yaml
       template: .goreleaser.yaml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .mise.toml
       template: .mise.toml.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .mise/tasks/changelog-release
-      template: .mise/tasks/changelog-release.tpl
-      module: github.com/rgst-io/stencil-golang
+      template: .mise/tasks/changelog-release
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .vscode/common.code-snippets
       template: .vscode/common.code-snippets.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .vscode/extensions.json
-      template: .vscode/extensions.json.tpl
-      module: github.com/rgst-io/stencil-golang
+      template: .vscode/extensions.json
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: .vscode/settings.json
-      template: .vscode/settings.json.tpl
-      module: github.com/rgst-io/stencil-golang
+      template: .vscode/settings.json
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: CONTRIBUTING.md
       template: CONTRIBUTING.md.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
     - name: LICENSE
       template: LICENSE.tpl
-      module: github.com/rgst-io/stencil-golang
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed
+    - name: cmd/downloader/downloader.go
+      template: cmd/$name/name.go.tpl
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: unmanaged
+      status_reason: Template called file.Static and output already existed
+    - name: cmd/wrapper/wrapper.go
+      template: cmd/$name/name.go.tpl
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: unmanaged
+      status_reason: Template called file.Static and output already existed
+    - name: go.mod
+      template: go.mod.tpl
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: unmanaged
+      status_reason: Template called file.Static and output already existed
+    - name: renovate.json
+      template: renovate.json.tpl
+      module: go.rgst.io/rgst-io/stencil-golang
+      status: managed

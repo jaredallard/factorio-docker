@@ -2,7 +2,7 @@
 # GO_VERSION is the version of Go to use for building all dependencies.
 # This is set via the --build-arg flag when running `docker build`.
 ARG GO_VERSION
-ARG DEBIAN_VERSION=bookworm
+ARG DEBIAN_VERSION=trixie
 FROM golang:${GO_VERSION}-${DEBIAN_VERSION} AS builder
 WORKDIR /src
 
@@ -12,9 +12,9 @@ ENV GOMODCACHE=/tmp/.cache/go-mod
 
 # See --from reasoning near the end.
 ENV \
-  CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64
+	CGO_ENABLED=0 \
+	GOOS=linux \
+	GOARCH=amd64
 
 RUN mkdir -p /artifacts
 
@@ -22,29 +22,29 @@ RUN mkdir -p /artifacts
 # go.mod or go.sum files change.
 COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/tmp/.cache \
-  go mod download
+	go mod download
 
 # Copy over the rest
 COPY . .
 
 RUN --mount=type=cache,target=/tmp/.cache \
-  go build -trimpath -v -ldflags "-s -w" -o /artifacts ./cmd/...
+	go build -trimpath -v -ldflags "-s -w" -o /artifacts ./cmd/...
 
 FROM golang:${GO_VERSION}-${DEBIAN_VERSION} AS factocord
 ENV \
-  CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64 \
-  FACTOCORD_VERSION=v3.2.19
+	CGO_ENABLED=0 \
+	GOOS=linux \
+	GOARCH=amd64 \
+	FACTOCORD_VERSION=v3.2.19
 
 # Why: We're building Factocord-3.0...
 # hadolint ignore=DL3003
 RUN --mount=type=cache,target=/tmp/.cache \
-  git clone https://github.com/maxsupermanhd/FactoCord-3.0 && \
-  cd "FactoCord-3.0" && \
-  git checkout "${FACTOCORD_VERSION}" && \
-  go mod download && \
-  go build -ldflags "-w -s -X 'github.com/maxsupermanhd/FactoCord-3.0/v3/support.FactoCordVersion=${FACTOCORD_VERSION}'" -o /artifacts/ .
+	git clone https://github.com/maxsupermanhd/FactoCord-3.0 && \
+	cd "FactoCord-3.0" && \
+	git checkout "${FACTOCORD_VERSION}" && \
+	go mod download && \
+	go build -ldflags "-w -s -X 'github.com/maxsupermanhd/FactoCord-3.0/v3/support.FactoCordVersion=${FACTOCORD_VERSION}'" -o /artifacts/ .
 
 # We hardcode linux/amd64 here because Factorio can only be ran on
 # amd64.
@@ -68,15 +68,15 @@ ARG PGID=845
 # Why: ca-certificates don't need to be pinned.
 # hadolint ignore=DL3008
 RUN apt-get update -y \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Create a user to run the Factorio server under.
 RUN addgroup --system --gid "${PGID}" "${GROUP}" \
-  && adduser --system --uid "${PUID}" --gid "${PGID}" --no-create-home --disabled-password --shell /bin/sh "${USER}" \
-  && mkdir -p /data /opt/factorio \
-  && chown -R "${USER}:${GROUP}" /data /opt/factorio \
-  && chown -R "${USER}:${GROUP}" /data
+	&& adduser --system --uid "${PUID}" --gid "${PGID}" --no-create-home --disabled-password --shell /bin/sh "${USER}" \
+	&& mkdir -p /data /opt/factorio \
+	&& chown -R "${USER}:${GROUP}" /data /opt/factorio \
+	&& chown -R "${USER}:${GROUP}" /data
 
 # Copy over the built binaries from earlier.
 COPY --from=factocord /artifacts/ /usr/local/bin/

@@ -18,7 +18,7 @@ linters:
         - style
     goheader:
       template: |-
-        Copyright (C) {{ YEAR }} factorio-docker contributors
+        Copyright (C) {{ MOD_YEAR }} factorio-docker contributors
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,9 @@ linters:
         SPDX-License-Identifier: AGPL-3.0
     lll:
       line-length: 140
+  ## <<Stencil::Block(customLinterSettings)>>
+
+  ## <</Stencil::Block>>
 
   # Inverted configuration with enable-all and disable is not scalable
   # during updates of golangci-lint.
@@ -59,10 +62,14 @@ linters:
     - nakedret
     - staticcheck
     - revive
+    - usetesting
     - unconvert
     - unparam
     - unused
     - whitespace
+  ## <<Stencil::Block(customLinters)>>
+
+  ## <</Stencil::Block>>
 
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclusions:
@@ -82,6 +89,14 @@ linters:
           - gocyclo
           - goheader # Don't require license headers in test files.
           - gosec
+      # Checking return of Close() is optional.
+      - path: '(.+)\.go$'
+        text: 'Error return value of `(.*\.Close|fmt\.F.*)` is not checked'
+      - path: '(.+)\.go$'
+        text: "G104: Errors unhandled" # Duplicates errcheck.
+## <<Stencil::Block(customExclusions)>>
+
+## <</Stencil::Block>>
 
 # formatter settings
 formatters:

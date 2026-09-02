@@ -215,35 +215,35 @@ url = "https://github.com/mvdan/sh/releases/download/v3.12.0/shfmt_v3.12.0_windo
 url_api = "https://api.github.com/repos/mvdan/sh/releases/assets/270490128"
 
 [[tools.svu]]
-version = "3.4.0"
+version = "3.4.1"
 backend = "aqua:caarlos0/svu"
 
 [tools.svu."platforms.linux-arm64"]
-checksum = "sha256:ba8efd1da67532b811fe2864e43a93128b0c02702d1ad3a685ad58f41923f0eb"
-url = "https://github.com/caarlos0/svu/releases/download/v3.4.0/svu_3.4.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/364119349"
-provenance = "github-attestations"
+checksum = "sha256:801f310be2f91df86868a2de1f61fefaf06e3eb773431be7dde9765ecde4d21c"
+url = "https://github.com/caarlos0/svu/releases/download/v3.4.1/svu_3.4.1_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/410001856"
+provenance = "cosign"
 
 [tools.svu."platforms.linux-x64"]
-checksum = "sha256:f9fe4f0edb7d8cf4b0ecd84dd8ffa7e36186da6c701ab5fa59cb75a100a1705e"
-url = "https://github.com/caarlos0/svu/releases/download/v3.4.0/svu_3.4.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/364119347"
-provenance = "github-attestations"
+checksum = "sha256:7ee8c91998c15109130638dc661a912d5f426e2f8642f6f6c04e6502be920770"
+url = "https://github.com/caarlos0/svu/releases/download/v3.4.1/svu_3.4.1_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/410001859"
+provenance = "cosign"
 
 [tools.svu."platforms.macos-arm64"]
-checksum = "sha256:ef1534a5e3eddef786a8b3ae0a280fc295662e3d3f738135ecb9f6477f7c4aab"
-url = "https://github.com/caarlos0/svu/releases/download/v3.4.0/svu_3.4.0_darwin_all.tar.gz"
-url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/364119355"
-provenance = "github-attestations"
+checksum = "sha256:aeec0a735f12d6313c5b4f295ac2f86e00b56571d241abe5aa0306b41f43efd7"
+url = "https://github.com/caarlos0/svu/releases/download/v3.4.1/svu_3.4.1_darwin_all.tar.gz"
+url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/410001878"
+provenance = "cosign"
 
 [tools.svu."platforms.macos-x64"]
-checksum = "sha256:ef1534a5e3eddef786a8b3ae0a280fc295662e3d3f738135ecb9f6477f7c4aab"
-url = "https://github.com/caarlos0/svu/releases/download/v3.4.0/svu_3.4.0_darwin_all.tar.gz"
-url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/364119355"
-provenance = "github-attestations"
+checksum = "sha256:aeec0a735f12d6313c5b4f295ac2f86e00b56571d241abe5aa0306b41f43efd7"
+url = "https://github.com/caarlos0/svu/releases/download/v3.4.1/svu_3.4.1_darwin_all.tar.gz"
+url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/410001878"
+provenance = "cosign"
 
 [tools.svu."platforms.windows-x64"]
-checksum = "sha256:e0970676993787121f143d7d33b07e59eae5770c35269ceef53464144403fd2f"
-url = "https://github.com/caarlos0/svu/releases/download/v3.4.0/svu_3.4.0_windows_amd64.zip"
-url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/364119346"
-provenance = "github-attestations"
+checksum = "sha256:7f8d17beb8fbe4a5c6e232072e93a71c8338173dafd95eda898bd1838d12b14e"
+url = "https://github.com/caarlos0/svu/releases/download/v3.4.1/svu_3.4.1_windows_amd64.zip"
+url_api = "https://api.github.com/repos/caarlos0/svu/releases/assets/410001860"
+provenance = "cosign"

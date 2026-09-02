@@ -9,7 +9,7 @@ goreleaser = "latest"
 gotestsum = "1.13.0"
 shfmt = "latest"
 svu = "3.4.0"
-git-cliff = "2.13.1"
+git-cliff = "2.14.1"
 ## <<Stencil::Block(extraTools)>>
 
 ## <</Stencil::Block>>

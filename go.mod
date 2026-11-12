@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	charm.land/log/v2 v2.0.1
-	github.com/caarlos0/env/v11 v11.4.1
+	github.com/caarlos0/env/v11 v11.4.2
 	github.com/dustin/go-humanize v1.1.0
 	github.com/spf13/cobra v1.10.2
 	github.com/ulikunitz/xz v0.5.17

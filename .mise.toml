@@ -8,7 +8,7 @@ golangci-lint = "2.15.0"
 goreleaser = "latest"
 gotestsum = "1.13.0"
 shfmt = "latest"
-svu = "3.4.1"
+svu = "3.4.4"
 git-cliff = "2.14.2"
 ## <<Stencil::Block(extraTools)>>
 
